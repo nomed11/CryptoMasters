@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"frontendmasters.com/go/cryptomasters/api"
+)
 
 func main() {
-	fmt.Println("Setting up cryptomasters project")
+	rate, err := api.GetRate("eth")
+
+	fmt.Print(*rate, err)
+
 }
