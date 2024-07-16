@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"frontendmasters.com/go/cryptomasters/datatypes"
@@ -20,22 +21,24 @@ func GetRate(currency string) (*datatypes.Rate, error) {
 		return nil, err
 	}
 
+	// utilising CEXResponse to correctly utilise JSON response by API
+	var response CEXResponse
 	if res.StatusCode == http.StatusOK {
 		bodyBytes, err := io.ReadAll(res.Body)
 		if err != nil {
 			return nil, err
 		}
 
-		var cryptoRate datatypes.Rate
-		err = json.Unmarshal(bodyBytes, &cryptoRate)
+		err = json.Unmarshal(bodyBytes, &response)
 
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		return nil, fmt.Errorf("Status code received: %v", res.StatusCode)
+		return nil, fmt.Errorf("status code received: %v", res.StatusCode)
 	}
 
-	returnedRate := datatypes.Rate{Currency: currency, Price: 20}
+	price, _ := strconv.ParseFloat(response.Last, 64)
+	returnedRate := datatypes.Rate{Currency: currency, Price: price}
 	return &returnedRate, nil
 }
