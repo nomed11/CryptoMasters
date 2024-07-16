@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	rate, err := api.GetRate("eth")
+	rate, err := api.GetRate("btc")
 
 	fmt.Print(*rate, err)
 
